@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { GiftedChat } from 'react-native-gifted-chat'
 import { StyleSheet, ImageBackground, Text, TextInput, Alert, TouchableOpacity, Button, View, Platform } from 'react-native';
 
-class Example extends React.Component {
+export default class Chat extends React.Component {
     state = {
         messages: []
     };
@@ -64,9 +64,7 @@ class Example extends React.Component {
             </View>
         )
     }
-}
 
-export default class Chat extends React.Component {
     static navigationOptions = ({ navigation }) => {
         return {
             title: navigation.state.params.name,
