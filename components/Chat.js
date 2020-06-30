@@ -7,6 +7,12 @@ export default class Chat extends React.Component {
         messages: []
     };
 
+    static navigationOptions = ({ navigation }) => {
+        return {
+            title: navigation.state.params.name,
+        }
+    }
+
     componentDidMount() {
         this.setState({
             messages: [
@@ -51,7 +57,7 @@ export default class Chat extends React.Component {
 
     render() {
         return (
-            <View>
+            <View style={[styles.container, { backgroundColor: this.props.navigation.state.params.color }]}>
                 <GiftedChat
                     renderBubble={this.renderBubble.bind(this)}
                     messages={this.state.messages}
@@ -63,19 +69,6 @@ export default class Chat extends React.Component {
                 {Platform.OS === 'android' ? <KeyboardSpacer /> : null}
             </View>
         )
-    }
-
-    static navigationOptions = ({ navigation }) => {
-        return {
-            title: navigation.state.params.name,
-        }
-    }
-    render() {
-        return (
-            <View style={[styles.container, { backgroundColor: this.props.navigation.state.params.color }]}>
-                <Text style={{ color: '#FFFFFF' }}>This is your chat screen</Text>
-            </View>
-        );
     }
 }
 
