@@ -14,13 +14,13 @@ export default class Chat extends React.Component {
 
         if (!firebase.apps.length) {
             firebase.initializeApp({
-                apiKey: "AIzaSyAyoLYxvOOmicwF1aRqloIkOIAKkFKSTFs",
-                authDomain: "test-2c3fe.firebaseapp.com",
-                databaseURL: "https://test-2c3fe.firebaseio.com",
-                projectId: "test-2c3fe",
-                storageBucket: "test-2c3fe.appspot.com",
-                messagingSenderId: "631399803012",
-                appId: "1:631399803012:web:0b46dcebfd0afa64007ad1",
+                apiKey: "AIzaSyAPgVJN6OS6i5iOWQP6mUH7xrAo67ks90w",
+                authDomain: "messages-34033.firebaseapp.com",
+                databaseURL: "https://messages-34033.firebaseio.com",
+                projectId: "messages-34033",
+                storageBucket: "messages-34033.appspot.com",
+                messagingSenderId: "527968636505",
+                appId: "1:527968636505:web:ba56d34591b5da8052eb48",
             });
         }
 
