@@ -67,6 +67,10 @@ export default class Chat extends React.Component {
     }
 
     componentDidMount() {
+        NetInfo.isConnected.addEventListener(
+            'connectionChange',
+            this.handleConnectivityChange
+        );
 
         NetInfo.fetch().then(isConnected => {
             if (isConnected) {
