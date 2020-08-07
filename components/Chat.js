@@ -70,7 +70,7 @@ export default class Chat extends React.Component {
     }
 
     componentDidMount() {
-        NetInfo.isConnected.addEventListener(
+        this.unsubscribe = NetInfo.addEventListener(
             'connectionChange',
             this.handleConnectivityChange
         );
@@ -106,11 +106,6 @@ export default class Chat extends React.Component {
     componentWillUnmount() {
         this.unsubscribe();
         this.authUnsubscribe();
-
-        NetInfo.isConnected.removeEventListener(
-            'connectionChange',
-            this.handleConnectivityChange
-        );
     };
 
     onCollectionUpdate = (querySnapshot) => {
@@ -240,7 +235,7 @@ export default class Chat extends React.Component {
                     renderCustomView={this.renderCustomView}
                     onSend={messages => this.onSend(messages)}
                     user={{
-                        _id: this.state.uid
+                        _id: this.state.user
                     }}
                 />
                 {Platform.OS === 'android' ? <KeyboardSpacer /> : null}
