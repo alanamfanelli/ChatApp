@@ -39,10 +39,10 @@ export default class Chat extends React.Component {
 
 
     // get messages from asyncStorage
-    async getMessages() {
-        let messages = '';
+    getMessages = async () => {
+        let messages = "";
         try {
-            messages = await AsyncStorage.getItem('messages') || [];
+            messages = (await AsyncStorage.getItem("messages")) || [];
             this.setState({
                 messages: JSON.parse(messages)
             });
@@ -52,22 +52,25 @@ export default class Chat extends React.Component {
     };
 
     // save messages in asyncStorage
-    async saveMessages() {
+    saveMessages = async () => {
         try {
-            await AsyncStorage.setItem('messages', JSON.stringify(this.state.messages));
+            await AsyncStorage.setItem(
+                "messages",
+                JSON.stringify(this.state.messages)
+            );
         } catch (error) {
             console.log(error.message);
         }
     };
 
     // delete messages from asyncStorage
-    async deleteMessages() {
+    deleteMessages = async () => {
         try {
-            await AsyncStorage.removeItem('messages');
+            await AsyncStorage.removeItem("messages");
         } catch (error) {
             console.log(error.message);
         }
-    }
+    };
 
     componentDidMount() {
         this.unsubscribe = NetInfo.addEventListener(
@@ -81,18 +84,23 @@ export default class Chat extends React.Component {
                     isConnected: true,
                 });
 
-                this.authUnsubscribe = firebase.auth().onAuthStateChanged(async user => {
-                    if (!user) {
-                        await firebase.auth().signInAnonymously();
-                    } else {
+                this.authUnsubscribe = firebase
+                    .auth()
+                    .onAuthStateChanged(async user => {
+                        if (!user) {
+                            await firebase.auth().signInAnonymously();
+                        }
 
                         this.setState({
                             uid: user.uid,
                             messages: []
                         });
-                    }
-                    this.unsubscribe = this.referenceChatMessages.orderBy('createdAt', 'desc').onSnapshot(this.onCollectionUpdate);
-                });
+
+                        this.unsubscribe = this.referenceChatMessages
+                            .orderBy("createdAt", "desc")
+                            .onSnapshot(this.onCollectionUpdate);
+                    });
+
             } else {
                 this.setState({
                     isConnected: false,
@@ -108,31 +116,33 @@ export default class Chat extends React.Component {
         this.authUnsubscribe();
     };
 
-    onCollectionUpdate = (querySnapshot) => {
+    onCollectionUpdate = querySnapshot => {
         const messages = [];
         // go through each document
-        querySnapshot.forEach((doc) => {
+        querySnapshot.forEach(doc => {
             // get the QueryDocumentSnapshot's data
-            var data = doc.data();
+            let data = doc.data();
             messages.push({
                 _id: data._id,
-                text: data.text || '',
+                text: data.text || "",
                 createdAt: data.createdAt.toDate(),
                 user: data.user,
-                location: data.location || null,
+                location: data.location || null
             });
         });
         this.setState({
-            messages,
+            messages
         });
     };
 
-    handleConnectivityChange = (isConnected) => {
+    handleConnectivityChange = isConnected => {
         if (isConnected == true) {
             this.setState({
                 isConnected: true
             });
-            this.unsubscribe = this.referenceChatMessages.orderBy('createdAt', 'desc').onSnapshot(this.onCollectionUpdate);
+            this.unsubscribe = this.referenceChatMessages
+                .orderBy("createdAt", "desc")
+                .onSnapshot(this.onCollectionUpdate);
         } else {
             this.setState({
                 isConnected: false
@@ -141,46 +151,46 @@ export default class Chat extends React.Component {
     };
 
 
-    addMessage() {
+    addMessage = () => {
         const message = this.state.messages[0];
         this.referenceChatMessages.add({
             _id: message._id,
-            text: message.text || '',
+            text: message.text || "",
             createdAt: message.createdAt,
             user: message.user,
-            location: message.location || null,
+            location: message.location || null
         });
     }
 
     static navigationOptions = ({ navigation }) => {
         return {
-            title: navigation.state.params.name,
+            title: `${navigation.state.params.userName}'s Chat`,
         };
     };
 
-    onSend(messages = []) {
-        this.setState(previousState => ({
-            messages: GiftedChat.append(previousState.messages, messages),
-        }), () => {
-            this.saveMessages();
-        });
-    };
+    onSend = (messages = []) => {
+        this.setState(
+            previousState => ({
+                messages: GiftedChat.append(previousState.messages, messages)
+            }),
+            () => {
+                this.addMessage();
+                this.saveMessages();
+            }
+        );
+    }
 
     // hide inputbar when offline
-    renderInputToolbar(props) {
-        console.log('renderInputToolbar --> props', props.isConnected);
+    renderInputToolbar = (props) => {
+        console.log("renderInputToolbar --> props", props.isConnected);
         if (props.isConnected === false) {
         } else {
-            return (
-                <InputToolbar
-                    {...props}
-                />
-            );
+            return <InputToolbar {...props} />;
         }
-    };
+    }
 
     //display the communication features
-    renderCustomActions = (props) => {
+    renderCustomActions = props => {
         return <CustomActions {...props} />;
     };
 
@@ -190,17 +200,12 @@ export default class Chat extends React.Component {
         if (currentMessage.location) {
             return (
                 <MapView
-                    style={{
-                        width: 150,
-                        height: 100,
-                        borderRadius: 13,
-                        margin: 3
-                    }}
+                    style={{ width: 150, height: 100, borderRadius: 13, margin: 3 }}
                     region={{
                         latitude: currentMessage.location.latitude,
                         longitude: currentMessage.location.longitude,
                         latitudeDelta: 0.0922,
-                        longitudeDelta: 0.0421,
+                        longitudeDelta: 0.0421
                     }}
                 />
             );
@@ -226,7 +231,12 @@ export default class Chat extends React.Component {
 
     render() {
         return (
-            <View style={[styles.container, { backgroundColor: this.props.navigation.state.params.color }]}>
+            <View
+                style={{
+                    flex: 1,
+                    backgroundColor: this.props.navigation.state.params.backgroundColor
+                }}
+            >
                 <GiftedChat
                     messages={this.state.messages}
                     isConnected={this.state.isConnected}
@@ -238,7 +248,7 @@ export default class Chat extends React.Component {
                         _id: this.state.user
                     }}
                 />
-                {Platform.OS === 'android' ? <KeyboardSpacer /> : null}
+                {Platform.OS === "android" ? <KeyboardSpacer /> : null}
             </View>
         )
     }
